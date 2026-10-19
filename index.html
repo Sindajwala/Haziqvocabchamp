@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vocab Champ 🌟 - Fun English Practice for Little Champions</title>
+  <meta name="description" content="Interactive vocabulary practice game for young learners featuring spelling, pictures, riddles, voice reading, and printable worksheets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-icon">🌟</span>
+        <div>
+          <h1 class="brand-title">Vocab Champ</h1>
+          <p class="brand-subtitle">50 Super Words • 100+ Fun Challenges!</p>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-badge star-stat" title="Total Stars Earned">
+          <span class="star-icon">⭐</span>
+          <span id="star-count">0</span>
+        </div>
+        <div class="stat-badge streak-stat" title="Correct Streak">
+          <span>🔥</span>
+          <span id="streak-count">0</span>
+        </div>
+        <button id="btn-toggle-sound" class="icon-btn" title="Toggle Sound / Music" aria-label="Toggle Sound">
+          🔊
+        </button>
+        <button id="btn-open-print" class="print-pill-btn" title="Print Paper Worksheets">
+          🖨️ Printable Worksheets
+        </button>
+      </div>
+    </header>
+
+    <!-- Category Mode Selector -->
+    <nav class="mode-selector" aria-label="Game Modes">
+      <button class="mode-tab active" data-category="all">
+        <span class="tab-emoji">🎯</span> All Mixed (Quick 10)
+      </button>
+      <button class="mode-tab" data-category="spelling">
+        <span class="tab-emoji">🔤</span> Spelling Choice
+      </button>
+      <button class="mode-tab" data-category="picture">
+        <span class="tab-emoji">🖼️</span> Look & Identify
+      </button>
+      <button class="mode-tab" data-category="riddle">
+        <span class="tab-emoji">💡</span> Socho & Fill (Riddles)
+      </button>
+    </nav>
+
+    <!-- Main Game Area -->
+    <main class="game-area">
+      <!-- Progress Bar -->
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="progress-question-label">Question 1 of 10</span>
+          <span id="progress-score-label">Score: 0</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <section class="card question-card" id="question-card">
+        <!-- Floating category badge & Audio Button -->
+        <div class="card-top-bar">
+          <span class="category-badge" id="category-badge">🔤 SPELLING CHOICE</span>
+          <button id="btn-read-aloud" class="voice-btn" title="Speak this question loudly!">
+            🗣️ Listen
+          </button>
+        </div>
+
+        <!-- Visual / Image illustration container (if picture question) -->
+        <div class="visual-container" id="visual-container">
+          <div class="emoji-hero" id="visual-emoji">🐱</div>
+        </div>
+
+        <!-- Question Prompt Text -->
+        <div class="prompt-container">
+          <h2 class="question-text" id="question-text">This is a ________</h2>
+          <p class="question-hint" id="question-hint">Choose the correct word below:</p>
+        </div>
+
+        <!-- Interactive Options Buttons Container -->
+        <div class="options-grid" id="options-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Feedback Area -->
+        <div class="feedback-banner" id="feedback-banner" style="display: none;">
+          <span class="feedback-icon" id="feedback-icon">🎉</span>
+          <span class="feedback-msg" id="feedback-msg">Super Job! That is right!</span>
+          <button class="next-btn" id="btn-next">Next Question ➡️</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Controls & Quick Nav -->
+    <footer class="app-footer">
+      <button id="btn-restart-round" class="secondary-btn">🔄 Restart Round</button>
+      <button id="btn-word-list-modal" class="secondary-btn">📖 View All 50 Words</button>
+      <button id="btn-practice-all" class="secondary-btn">🚀 Practice All 100+ Questions</button>
+    </footer>
+  </div>
+
+  <!-- Win / Round Complete Modal -->
+  <div class="modal-overlay" id="victory-modal" style="display: none;">
+    <div class="modal-card victory-card">
+      <div class="victory-trophy">🏆</div>
+      <h2>Awesome Job, Champ!</h2>
+      <p id="victory-summary">You answered 10 out of 10 correctly!</p>
+      
+      <div class="star-rating" id="victory-stars">
+        ⭐⭐⭐
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-play-again" class="primary-btn">🎮 Play Next Round</button>
+        <button id="btn-victory-print" class="outline-btn">🖨️ Print Worksheet for Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Words Master List Modal -->
+  <div class="modal-overlay" id="words-modal" style="display: none;">
+    <div class="modal-card words-card">
+      <div class="modal-header">
+        <h2>📚 50 Vocabulary Words List</h2>
+        <button class="close-modal-btn" id="btn-close-words">✖</button>
+      </div>
+      <div class="words-grid-scroll" id="words-grid-container">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-actions">
+        <button id="btn-done-words" class="primary-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Worksheet Modal / Container -->
+  <div class="print-preview-modal" id="print-modal" style="display: none;">
+    <div class="print-modal-content">
+      <div class="print-controls no-print">
+        <button id="btn-close-print" class="secondary-btn">⬅️ Back to Game</button>
+        <div class="print-options">
+          <label>Choose Section:
+            <select id="print-type-select">
+              <option value="all">Complete 50 Words Test (Page 1 & 2)</option>
+              <option value="spelling">Spelling Challenge (Dog or Dok?)</option>
+              <option value="pictures">Picture Clue Challenge</option>
+              <option value="riddles">Think & Write Riddles</option>
+            </select>
+          </label>
+          <button id="btn-do-print" class="primary-btn">🖨️ Print / Save as PDF</button>
+        </div>
+      </div>
+
+      <!-- Actual printable page structure -->
+      <div class="printable-sheet" id="printable-sheet">
+        <!-- Generated by JS for crisp clean printing -->
+      </div>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
